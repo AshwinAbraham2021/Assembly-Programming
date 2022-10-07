@@ -35,6 +35,61 @@ unsigned char memory[256] = {
 
 unsigned char registers[8] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
+void load_const(int reg, unsigned char val)
+{
+	registers[reg] = val;
+}
+
+void add_const(int reg, unsigned char val)
+{
+	registers[reg] += val;
+}
+
+void sub_const(int reg, unsigned char val)
+{
+	registers[reg] -= val;
+}
+
+void add(int reg1, int reg2)
+{
+	registers[reg1] += registers[reg2];
+}
+
+void sub(int reg1, int reg2)
+{
+	registers[reg1] -= registers[reg2];
+}
+
+void print(int reg)
+{
+	printf("%c", registers[reg]);
+}
+
+void jnz(int* ip_ptr, int reg, unsigned char val)
+{
+	if(registers[reg] != 0) *ip_ptr = val;
+}
+
+void jz(int* ip_ptr, int reg, unsigned char val)
+{
+	if(registers[reg] == 0) *ip_ptr = val;
+}
+
+void load(int reg1, int reg2)
+{
+	registers[reg1] = memory[registers[reg2]];
+}
+
+void store(int reg1, int reg2)
+{
+	memory[registers[reg1]] = registers[reg2];
+}
+
+void halt()
+{
+	exit(0);
+}
+
 int main ()
 {
 	int instruction_pointer = 0;
@@ -49,40 +104,51 @@ int main ()
 		switch(op0) {
 			case 0x00:
 				check_index(op1);
-				// UNIMPLEMENTED
+				load_const(op1, op2);
+				break;
 			case 0x01:
 				check_index(op1);
-				// UNIMPLEMENTED
+				add_const(op1, op2);
+				break;
 			case 0x02:
 				check_index(op1);
-				// UNIMPLEMENTED
+				sub_const(op1, op2);
+				break;
 			case 0x03:
 				check_index(op1);
 				check_index(op2);
-				// UNIMPLEMENTED
+				add(op1, op2);
+				break;
 			case 0x04:
 				check_index(op1);
 				check_index(op2);
-				// UNIMPLEMENTED
+				sub(op1, op2);
+				break;
 			case 0x05:
 				check_index(op1);
-				// UNIMPLEMENTED
+				print(op1);
+				break;
 			case 0x06:
 				check_index(op1);
-				// UNIMPLEMENTED
+				jnz(&instruction_pointer, op1, op2);
+				break;
 			case 0x07:
 				check_index(op1);
-				// UNIMPLEMENTED
+				jz(&instruction_pointer, op1, op2);
+				break;
 			case 0x08:
 				check_index(op1);
 				check_index(op2);
-				// UNIMPLEMENTED
+				load(op1, op2);
+				break;
 			case 0x09:
 				check_index(op1);
 				check_index(op2);
-				// UNIMPLEMENTED
+				store(op1, op2);
+				break;
 			case 0xff:
-				// UNIMPLEMENTED
+				halt();
+				break;
 			default:
 				printf("Illegal instruction\n");
 				return -1;
