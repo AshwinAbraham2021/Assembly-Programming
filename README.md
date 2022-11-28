@@ -18,7 +18,7 @@ in the terminal
 
 To assemble an x86 assembly file (named ```file.asm```, for example) in 64 bit mode, execute:
 
-    nasm -f elf64 -g file.asm,
+    nasm -f elf64 file.asm,
 
 This will output an object file called ```file.o``` by default.
 
@@ -36,7 +36,7 @@ Some errors may be rectified by using the ```-no-pie``` option
 
 If the function instead relies solely on standard CPU instructions and System Calls, such as the ```read``` and ```write``` syscalls, then we can use the linker directly instead of GCC.
 
-    ld -g file.o
+    ld file.o
 
 ```standalone.asm``` is to be compiled this way.
 

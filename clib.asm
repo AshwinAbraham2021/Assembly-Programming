@@ -4,7 +4,7 @@
 ; This code demonstrates the ability to call C library functions from an assembly program
 
 section .rodata
-format db 'Number of command line arguments', 58, ' %d', 10, 'Command Line Arguments', 58, 10, 0
+format db 'Number of command line arguments', 58, ' %d', 10, 'Command Line Arguments', 58, 10, 0; 58 is ':' and 10 is '\n'
 
 section .text
 global main
