@@ -13,16 +13,17 @@ section .text
 
         mov eax, 1
         cmp edi, 0
-        jle ret_fact_loop
+        jle .return
 
         push rcx
         mov ecx, edi
-        loop_fact_loop:
+        .0:
             imul eax, ecx
-        loop loop_fact_loop
+        loop .0
         pop rcx
 
-        ret_fact_loop:
+        .return:
+            ;mov rsp, rbp
             pop rbp
             ret
 
@@ -33,13 +34,14 @@ section .text
 
         mov eax, 1
         cmp edi, 0
-        jle ret_fact_rec
+        jle .return
 
         dec edi
         call fact_rec
         inc edi
         imul eax, edi
 
-        ret_fact_rec:
+        .return:
+            ;mov rsp, rbp
             pop rbp
             ret

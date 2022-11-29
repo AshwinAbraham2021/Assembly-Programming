@@ -12,18 +12,18 @@ section .text
 global _start
 
 _start:
-    xor rax, rax
+    xor rax, rax ; syscall 0 - read
     xor rdi, rdi
     mov rsi, buf
     mov rdx, len
     syscall
 
-    mov rax, 1
+    mov rax, 1 ; syscall 1 - write
     mov rdi, 1
     mov rsi, buf
     mov rdx, len
     syscall
 
     xor rdi, rdi
-    mov rax, 60
+    mov rax, 60 ; syscall 60 - exit
     syscall

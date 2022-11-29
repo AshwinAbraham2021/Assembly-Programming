@@ -27,7 +27,7 @@ get_el:
     mov rbp, rsp
 
     cmp edi, DWORD [alloc_size]
-    jl ret_get_el
+    jl .return
 
     ; growing the buffer (size -> 2*i + 1)
     push rdi
@@ -40,15 +40,15 @@ get_el:
 
     mov edx, DWORD [alloc_size]
     shl rdx, 2
-    start_loop:
+    .0:
         cmp edi, edx
-        jge end_loop
+        jge .1
         mov rcx, QWORD [buff]
         mov ecx, DWORD [rcx+rdi]
         mov DWORD [rax+rdi], ecx
         add edi, 4
-        jmp start_loop
-    end_loop:
+        jmp .0
+    .1:
 
     mov rdi, QWORD [buff]
     mov QWORD [buff], rax
@@ -58,13 +58,14 @@ get_el:
     pop rdi
 
 
-    ret_get_el:
+    .return:
         mov rax, QWORD [buff]
         push rdi
         shl rdi, 2
         add rax, rdi
         pop rdi
 
+        ;mov rsp, rbp
         pop rbp
         ret
 
@@ -74,21 +75,22 @@ loop_fib:
 
     mov eax, 0
     cmp edi, 0
-    jle ret_loop_fib
+    jle .return
 
     push rbx
     mov ebx, 1
     mov ecx, edi
-    head:
+    .0:
         mov edx, eax
         mov eax, ebx
         add ebx, edx
-    loop head
+    loop .0
 
     pop rbx
 
 
-    ret_loop_fib:
+    .return:
+        ;mov rsp, rbp
         pop rbp
         ret
 
@@ -98,11 +100,11 @@ rec_fib:
 
     mov eax, 0
     cmp edi, 0
-    jle ret_rec_fib
+    jle .return
 
     mov eax, 1
     cmp edi, 1
-    je ret_rec_fib
+    je .return
 
     push rcx
 
@@ -118,7 +120,8 @@ rec_fib:
 
     add edi, 2
 
-    ret_rec_fib:
+    .return:
+        ;mov rsp, rbp
         pop rbp
         ret
 
@@ -128,10 +131,10 @@ memo_fib:
 
     mov eax, 0
     cmp edi, 0
-    jl ret_memo_fib
+    jl .return
 
     cmp edi, DWORD [calc_size]
-    jl calculated
+    jl .calculated
 
     dec edi
     call memo_fib
@@ -149,13 +152,14 @@ memo_fib:
     inc edi
     mov DWORD [calc_size], edi
     dec edi
-    jmp ret_memo_fib
+    jmp .return
 
-    calculated:
+    .calculated:
         call get_el
         mov eax, DWORD [rax]
 
-    ret_memo_fib:
+    .return:
+        ;mov rsp, rbp
         pop rbp
         ret
 
@@ -165,7 +169,7 @@ TR_rec_fib:
 
     mov eax, esi
     cmp edi, 0
-    jle ret_TR_rec_fib
+    jle .return
 
     push rsi
     push rdx
@@ -182,7 +186,8 @@ TR_rec_fib:
     pop rsi
     inc edi
 
-    ret_TR_rec_fib:
+    .return:
+        ;mov rsp, rbp
         pop rbp
         ret
 
@@ -190,19 +195,20 @@ TR_fib:
     push rbp
     mov rbp, rsp
 
-    top_TR_fib:
+    .0:
         mov eax, esi
         cmp edi, 0
-        jle ret_TR_fib
+        jle .return
 
         mov ecx, edx
         add edx, esi
         mov esi, ecx
 
         dec edi
-    jmp top_TR_fib
+    jmp .0
 
-    ret_TR_fib:
+    .return:
+        ;mov rsp, rbp
         pop rbp
         ret
 
@@ -219,10 +225,12 @@ main:
 
     sub rsp, 16
 
-    inf:
+    .0:
         mov rdi, format_scanf
         lea rsi, [rbp-4]
         call scanf WRT ..plt
+        cmp eax, 1
+        jne .return
 
         mov edi, DWORD [rbp-4]
         call loop_fib
@@ -258,9 +266,10 @@ main:
         mov rdi, format_printf_rec
         call printf WRT ..plt
 
-    jmp inf
+    jmp .0
 
-    xor eax, eax
-    mov rsp, rbp
-    pop rbp
-    ret
+    .return:
+        xor eax, eax
+        mov rsp, rbp ; local variables were created
+        pop rbp
+        ret

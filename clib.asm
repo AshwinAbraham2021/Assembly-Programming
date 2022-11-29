@@ -25,7 +25,7 @@ main:
 
     mov ecx, edi
     mov eax, edi
-    head:
+    .1:
         push rcx
         push rax
         push rsi
@@ -35,8 +35,9 @@ main:
         pop rsi
         pop rax
         pop rcx
-    loop head
+    loop .1
 
     xor eax, eax
+    ;mov rsp, rbp
     pop rbp
     ret
