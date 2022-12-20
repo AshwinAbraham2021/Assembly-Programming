@@ -14,7 +14,7 @@ int main(int argc, char** argv)
     while(1)
     {
         int x;
-        scanf("%d", &x);
+        if(scanf("%d", &x) != 1) break;
         printf("%d\n%d\n", fact_loop(x), fact_rec(x));
     }
 }
